@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
 	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="icon" type="image/icon" href="favicon.ico" >
-    <title>Карбованець (&#1180;) Оглядач блокчейну</title>
+    <title>Boolberry [XBB] Оглядач блокчейну</title>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
@@ -118,7 +118,7 @@
         var i = 0;
         var byteUnits = [' H', ' KH', ' MH', ' GH', ' TH', ' PH' ];
         while (hashrate > 1024){
-            hashrate = hashrate / 1024;
+            hashrate = hashrate / 1000;
             i++;
         }
         return hashrate.toFixed(2) + byteUnits[i];
@@ -225,7 +225,7 @@
 
     $(function(){
         $.get(api + '/getinfo', function(data){
-            lastStats = JSON.parse(data);
+            lastStats = data;
             routePage(fetchLiveStats);
         });
     });
@@ -291,7 +291,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand " href="/"><span id="coinIcon">&#1180;</span> <strong>Карбо</strong>ванець</a>
+            <a class="navbar-brand " href="/"><span id="coinIcon">b</span> <strong>mining</strong>.blue</a>
 			<div id="stats_updated"><i class="fa fa-bolt"></i></div>
         </div>
 		
@@ -513,7 +513,7 @@ $('#txt_search').keyup(function(e){
 			<div class="col-lg-4 col-md-4 col-sm-6">
 				<p>
 					<small>
-						&copy; 2017 Карбованець. 
+						&copy; 2017 Карбованець and clintar. 
 					</small>
 				</p>
 			</div>
@@ -522,8 +522,9 @@ $('#txt_search').keyup(function(e){
 					<small>
 					<!-- This copyright should be left intact -->
 				
-					Працює на <a target="_blank" href="https://github.com/Karbovanets/Karbowanec-Blockchain-Explorer"><i class="fa fa-github"></i> Karbowanec Blockchain Explorer</a>
+					Працює на <a target="_blank" href="https://github.com/clintar/Boolberry-Blockchain-Explorer"><i class="fa fa-github"></i> Boolberry Blockchain Explorer</a>
 					в. 1.0.7.<br />
+					<span class="text-muted">Використовує <a target="_blank" href="https://github.com/Karbovanets/Karbowanec-Blockchain-Explorer"><i class="fa fa-github"></i> Karbowanec Blockchain Explorer</a> <br />
 					<span class="text-muted">Частково використовує <strong>cryptonote-universal-pool</strong><br />
 					який розповсюджується за ліцензією <a href="http://www.gnu.org/licenses/gpl-2.0.html">GPL</a></span>
 					</small>
@@ -533,7 +534,7 @@ $('#txt_search').keyup(function(e){
 			<div class="col-lg-4 col-md-4 col-sm-6">
 			
 				<ul>
-					<li><a href="http://karbowanec.com">karbowanec.com</li>
+					<li><a href="http://boolberry.com">boolberry.com</li>
 				</ul>
 				
 			</div>

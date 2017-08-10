@@ -1,7 +1,7 @@
-var api = 'http://52.21.253.162:32348';
-var blockTargetInterval = 240;
+var api = 'http://explorer.mining.blue/domain';
+var blockTargetInterval = 120;
 var coinUnits = 1000000000000;
-var symbol = 'KRB';
+var symbol = 'XBB';
 var refreshDelay = 30000;
 // pools stats by MainCoins
 var networkStat = {
@@ -23,5 +23,15 @@ var networkStat = {
 		["54.223.133.248", "http://54.223.133.248:8117"],
 		["bitcache.cc", "http://bitcache.cc:8117"]
 		
+    ],
+    "xbb": [
+                ["bbr.miningclub.info", "http://bbr.miningclub.info:8118"],
+                ["bbr.poolto.be", "http://bbr.poolto.be/api"],
+                ["mining.blue", "http://mining.blue/api"],
+                ["bbr.hash.group", "http://hashgroup.ddns.net:8118"],
+                ["mbkpool.info", "http://bbr.mbkpool.info:8117"],
+
+
+
     ]
 };

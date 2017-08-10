@@ -97,8 +97,8 @@
 
 	function renderTransaction(transaction){
 				var details = transaction.txDetails;
-                inputs = transaction.tx.vin;
-                outputs = transaction.tx.vout;
+                inputs = transaction.txin;
+                outputs = transaction.txout;
                 block = transaction.block;
 				
                 updateText('transaction.hash', details.hash);
@@ -132,8 +132,8 @@
 	}
 
     function getInputCells(input){
-        return '<td>' + getReadableCoins(input.value.amount) + '</td>' +
-            '<td>' + input.value.k_image + '</td>';
+        return '<td>' + getReadableCoins(input.amount) + '</td>' +
+            '<td>' + input.k_image + '</td>';
     }
 
 
@@ -141,8 +141,8 @@
 
         var row = document.createElement('tr');
         row.setAttribute('data-json', jsonString);
-        row.setAttribute('data-k_image', input.value.k_image);
-        row.setAttribute('id', 'inputRow' + input.value.k_image);
+        row.setAttribute('data-k_image', input.k_image);
+        row.setAttribute('id', 'inputRow' + input.k_image);
 
         row.innerHTML = getInputCells(input);
 
@@ -157,12 +157,12 @@
 		
             var input = inputResults[i];
 		
-            if (!input.value.amount)
+            if (!input.amount || !input.k_image)
                 continue;
 				
             var inputJson = JSON.stringify(input);
 			
-            var existingRow = document.getElementById('inputRow' + input.value.k_image);
+            var existingRow = document.getElementById('inputRow' + input.k_image);
 
             if (existingRow && existingRow.getAttribute('data-json') !== inputJson){
                 $(existingRow).replaceWith(getInputRowElement(input, inputJson));
@@ -181,7 +181,7 @@
 
     function getOutputCells(output){
         return '<td>' + getReadableCoins(output.amount) + '</td>' +
-            '<td>' + output.target.data.key + '</td>';
+            '<td>' + output.key + '</td>';
     }
 
 
@@ -189,8 +189,8 @@
 
         var row = document.createElement('tr');
         row.setAttribute('data-json', jsonString);
-        row.setAttribute('data-k_image', output.target.data.key);
-        row.setAttribute('id', 'outputRow' + output.target.data.key);
+        row.setAttribute('data-k_image', output.key);
+        row.setAttribute('id', 'outputRow' + output.key);
 
         row.innerHTML = getOutputCells(output);
 
@@ -207,7 +207,7 @@
 
             var outputJson = JSON.stringify(output);
 			
-            var existingRow = document.getElementById('outputRow' + output.target.data.key);
+            var existingRow = document.getElementById('outputRow' + output.key);
 
             if (existingRow && existingRow.getAttribute('data-json') !== outputJson){
                 $(existingRow).replaceWith(getOutputRowElement(output, outputJson));
