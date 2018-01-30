@@ -46,10 +46,7 @@
 		<div class="panel panel-default">
 		  <div class="panel-heading">
 		  
-			<h3 class="panel-title"><i class="fa fa-area-chart" aria-hidden="true"></i> Charts
-		  
-			<span class="text-default" data-toggle="tooltip" data-placement="right" data-original-title="Difficulty based on last blocks from the list below. Block size, transactions count. Load more blocks to enlarge chart range."><i class="fa fa-question-circle"></i></span>
-			</h3>
+			<h3 class="panel-title"><i class="fa fa-area-chart" aria-hidden="true"></i> Difficulty charts</h3>
 			
 		  </div>
 		  <div class="panel-body chart-wrapper">
@@ -243,7 +240,7 @@ $('#loadMoreBlocks').click(function(){
 					 renderBlocks(data.result.blocks)
 				).then(function() {
 					setTimeout(function(){
-						loadMoreChart();
+						refreshChart();
 					}, 100)
 				});
             }
@@ -482,7 +479,7 @@ var xhrGetPool = $.ajax({
 							'<tr><td>' + getReadableCoins(tx.amount_out, 4, true) + '</td>' +
 							'<td>' + getReadableCoins(tx.fee, 4, true) + '</td>' +
 							'<td>' + tx.size + '</td>' +
-							'<td>' + formatPaymentLink(tx.hash) + '</td><tr>';
+							'<td>' + tx.hash + '</td><tr>';
 					$(txsRows).append(columns);
 					$(row).find('.mtx-ago').timeago('update', new Date(timestamp * 1000).toISOString());
 				});
@@ -495,7 +492,6 @@ var xhrGetPool = $.ajax({
 function displayDiffChart() {
 	var ctx = document.getElementById("difficultyChart");
 	var chartData = {
-			//labels: [].concat(Blocks).reverse(),
 			labels: [].concat(formatDate(Timestamps)).reverse(),
 			datasets: [
 			  {
@@ -575,89 +571,22 @@ function displayDiffChart() {
 			scales: {
 			  yAxes: [{
 				id: 'Height',
-				type: 'linear',
-				position: 'left',
-				scaleLabel: {
-					display: false,
-					labelString: 'Height'
-				},
-				gridLines: {
-					display:false
-				},
-				ticks: {
-					fontSize: 9,
-					display:false
-				},
 				display: false
 			  },{
 				id: 'Difficulty',
-				type: 'linear',
-				position: 'left',
-				scaleLabel: {
-					display: false,
-					labelString: 'Difficulty'
-				},
-				gridLines: {
-					display:false
-				},
-				ticks: {
-					fontSize: 9,
-					display:false
-				},
 				display: false
 			  },{
 				id: 'Transactions',
-				type: 'linear',
-				position: 'right',
-				scaleLabel: {
-					display: false,
-					labelString: 'Transactions'
-				},
-				gridLines: {
-					display:false
-				},
-				ticks: {
-					fontSize: 9,
-					display:false
-				},
 				display: false
 			  },{
 				id: 'Sizes',
-				type: 'linear',
-				position: 'right',
-				scaleLabel: {
-					display: false,
-					labelString: 'Size'
-				},
-				gridLines: {
-					display:false
-				},
-				ticks: {
-					fontSize: 9,
-					display:false
-				},
 				display: false
 			  }
-			  
 			  ],
 			  xAxes: [{
 				type: "time",
 				time: {
-                    parser: false,
-					unit: 'minute',
-					unitStepSize: 60,
-					round: 'second',
-					displayFormats: {
-                                        'millisecond': 'SSS [ms]',
-                                        'second': 'HH:mm:ss', // 11:20:01 AM
-                                        'minute': 'HH:mm', // 11:20:01 AM
-                                        'hour': 'HH:mm', // Sept 4, 5PM
-                                        'day': 'MMM Do', // Sep 4 2015
-                                        'week': 'll', // Week 46, or maybe "[W]WW - YYYY" ?
-                                        'month': 'MMM YYYY', // Sept 2015
-                                        'quarter': '[Q]Q - YYYY', // Q3
-                                        'year': 'YYYY', // 2017
-                                    },
+                    format: 'MM/DD/YY HH:mm'
 				},
 				gridLines: {
 					display:false
@@ -678,10 +607,7 @@ function displayDiffChart() {
 				//displayColors: false,
 				callbacks: {
 					title: function(tooltipItem, data) {
-						var height	= data.datasets[3].data[tooltipItem[0].index];
-						var time = new Date(data.labels[tooltipItem[0].index]).toLocaleString();
-						//return 'Блок №: ' + height + ' - ' + time + '';
-						return time + '';
+						return new Date(data.labels[tooltipItem[0].index]).toLocaleString()
 					},/*
 					label: function(tooltipItem, data) { 
 						var diff		= data.datasets[0].data[tooltipItem.index];
@@ -718,33 +644,49 @@ function displayDiffChart() {
 }
 
 function refreshChart() {
+	if (!diffChart) {
+		return;
+	}
+
 	var brows   = $('#blocks_rows').children(),
-		labels  = [],
+		heights  = [],
 		diffs   = [],
 		sizes   = [],
 		times   = [],
 		heights = [],
 		txsnr   = [];
+
+	var data = [];
+
 		for (var i = 0; i < brows.length; i++) {
 			var row = $(brows[i]);
-			var label  = parseInt(row.find('td:first').text());
-			var diff   = parseInt(row.find('td.blk-diff').text());
-			var txses  = parseInt(row.find('td:last').text());
-			var size   = parseInt(row.find('td:nth-child(3)').text());
-			var time   = row.attr('data-dt');
-			
-				labels.push(label);
-				diffs.push(diff);
-				txsnr.push(txses);
-				sizes.push(size);				
-				times.push(time);				
+
+			data.push({
+				height: parseInt(row.find('td:first').text()),
+				diff: parseInt(row.find('td.blk-diff').text()),
+				txsnr: parseInt(row.find('td:last').text()),
+				size: parseInt(row.find('td:nth-child(3)').text()),
+				time: new Date(row.attr('data-dt'))
+			});			
 		}
-		//diffChart.data.labels = labels.reverse();
-		diffChart.data.labels = times.reverse();
-		diffChart.data.datasets[0].data = labels.reverse();
-		diffChart.data.datasets[1].data = diffs.reverse();
-		diffChart.data.datasets[2].data = txsnr.reverse();
-		diffChart.data.datasets[3].data = sizes.reverse();
+
+		data.sort(function(a, b) {
+			return b.time - a.time;
+		});
+
+		diffChart.data.labels = [];
+		diffChart.data.datasets[0].data = [];
+		diffChart.data.datasets[1].data = [];
+		diffChart.data.datasets[2].data = [];
+		diffChart.data.datasets[3].data = [];
+
+		for (var i = 0; i < data.length; i++) {
+			diffChart.data.labels.push(data[i].time);
+			diffChart.data.datasets[0].data.push(data[i].height);
+			diffChart.data.datasets[1].data.push(data[i].diff);
+			diffChart.data.datasets[2].data.push(data[i].txsnr);
+			diffChart.data.datasets[3].data.push(data[i].size);
+		}
 		
 		diffChart.update();
 }	
