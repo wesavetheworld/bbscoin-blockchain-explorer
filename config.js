@@ -1,4 +1,4 @@
-var api = 'http://127.0.0.1:21204';
+var api = 'https://explorer.bbscoin.xyz';
 var blockTargetInterval = 120;
 var coinUnits = 100000000;
 var symbol = 'BBS';
